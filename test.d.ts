@@ -14,6 +14,7 @@ declare module "expect" {
   }
   interface Matchers<R> {
     toStdoutLog(expected: string): R;
+    
   }
 }
 
