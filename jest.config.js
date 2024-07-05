@@ -1,8 +1,8 @@
 /** @type {import('jest').Config} */
 
-const config  = {
-
-    // useStderr: true
-}
+const config = {
+  restoreMocks: true,
+  injectGlobals: false,
+};
 
 module.exports = config;

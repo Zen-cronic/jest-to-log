@@ -78,6 +78,10 @@ describe("Test console", () => {
 
       expect(stdoutWriteSpy).toHaveBeenCalledTimes(2); //passes
 
+      expect(stdoutWriteSpy).not.toHaveBeenLastCalledWith("Lettuce\n");
+      expect(stdoutWriteSpy).not.toHaveBeenCalledWith("Lettuce\n");
+
+      expect(stdoutWriteSpy.mock.calls).not.toContainEqual(["Beetroot\n"]);
       //following fails cuz custom console implm
       //https://github.com/jestjs/jest/issues/9984
       //   expect(stdoutWriteSpy).toHaveBeenLastCalledWith("Lettuce\n")

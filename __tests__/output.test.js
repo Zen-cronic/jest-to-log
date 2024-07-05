@@ -1,4 +1,5 @@
 const { describe, expect, it } = require("@jest/globals");
+const util = require("node:util")
 
 function checkLogMatchersArgs(actual, expected) {
   if (typeof actual != "function") {
@@ -31,7 +32,7 @@ expect.extend({
 
     const pass = logged == expected;
 
-    console.log({ logged });
+    // console.log({ logged });
     if (pass) {
       return {
         pass: true,
@@ -75,7 +76,7 @@ expect.extend({
 
     const pass = logged == expected;
 
-    console.log({ logged });
+    // console.log({ logged });
     if (pass) {
       return {
         pass: true,
@@ -117,6 +118,8 @@ expect.extend({
     const pass = logged == expected;
 
     console.log({ logged });
+    console.log({stdoutLogged: util.stripVTControlCharacters(logged)});
+
     if (pass) {
       return {
         pass: true,
@@ -152,6 +155,26 @@ describe("console and process", () => {
         console.log("Jello", 1);
       }).toConsoleLog("Jello 1");
     });
+    it("should not honor process.stdout.write", () => {
+      //ansi-coloured
+      //     Expected "  console.log
+      //     Jello 1
+
+      //       at log (__tests__/output.test.js:158:17)·
+      // " to be "Jello 1"
+
+      //  {
+      //     logged: '  \x1B[2mconsole.log\x1B[22m\n' +
+      //     '    Jello 1\n' +
+      //     '\x1B[2m\x1B[22m\n' +
+      //     '\x1B[2m      \x1B[2mat log (\x1B[22m\x1B[2m\x1B[0m\x1B[36m__tests__/output.test.js\x1B[39m\x1B[0m\x1B[2m:158:17)\x1B[22m\x1B[2m\x1B[22m\n' +
+      //     '\n'
+      // }
+      
+      expect(() => {
+        console.log("Jello", 1);
+      }).not.toStdoutLog("Jello 1");
+    });
   });
 
   describe("toConsoleInfo", () => {
@@ -164,14 +187,14 @@ describe("console and process", () => {
         console.info("Jello", "info");
       }).not.toConsoleInfo("abc123");
     });
-    it('should pass toConsoleInfo with console.log', () => {
-        expect(() => {
-            console.log("Jello", "info");
-          }).toConsoleInfo("Jello info");
-    
-          expect(() => {
-            console.log("Jello", "info");
-          }).not.toConsoleInfo("abc123");
+    it("should pass toConsoleInfo with console.log", () => {
+      expect(() => {
+        console.log("Jello", "info");
+      }).toConsoleInfo("Jello info");
+
+      expect(() => {
+        console.log("Jello", "info");
+      }).not.toConsoleInfo("abc123");
     });
   });
 
