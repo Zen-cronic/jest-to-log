@@ -35,10 +35,10 @@ expect.extend({
 
     process.stdout.write = origProcessStdoutWrite;
 
-    console.log({ logged });
+    // console.log({ logged });
 
     const strippedLogged = util.stripVTControlCharacters(logged);
-    console.log({ strippedLogged });
+    // console.log({ strippedLogged });
 
     const pass = strippedLogged == expected;
     if (pass) {
@@ -68,14 +68,28 @@ expect.extend({
 
     let logged = "";
 
+    //initial impl
+    // console.log = function (message, ...args) {
+    //   logged += message;
+    //   if (args.length > 0) {
+    //     for (const arg of args) {
+    //       logged += " " + arg;
+    //     }
+    //   }
+    // };
+
     console.log = function (message, ...args) {
-      logged += message;
-      if (args.length > 0) {
+      if (args.length == 0) {
+        logged += `${message}\n`;
+      } else {
+        // logged += `${message}\n`;
         for (const arg of args) {
           logged += " " + arg;
         }
+        logged += "\n";
       }
-      //stack overflow err
+
+      // stack overflow err
       //    (return) console.log(message, ...args);
     };
     process.stdout.write = console.log;
@@ -92,20 +106,25 @@ expect.extend({
     if (pass) {
       return {
         pass: true,
+        // message: () =>
+        //   `Expected ${this.utils.printReceived(
+        //     strippedLogged
+        //   )} not to be ${this.utils.printExpected(expected)}`,
         message: () =>
-          `Expected ${this.utils.printReceived(
-            strippedLogged
-          )} not to be ${this.utils.printExpected(expected)}`,
+          `${this.utils.printDiffOrStringify(
+            expected,
+            strippedLogged,
+            `Expected`,
+            `Received`,
+            true
+          )}
+            `,
       };
     } else {
       return {
         pass: false,
         message: () =>
-          `Expected ${this.utils.printReceived(
-            strippedLogged
-          )} to be ${this.utils.printExpected(
-            expected
-          )}\n${this.utils.printDiffOrStringify(
+          `${this.utils.printDiffOrStringify(
             expected,
             strippedLogged,
             `Expected`,
@@ -113,6 +132,10 @@ expect.extend({
             true
           )}
           `,
+        // message: () =>
+        //   `Expected ${this.utils.printReceived(
+        //     strippedLogged
+        //   )} to be ${this.utils.printExpected(expected)}`,
       };
     }
   },
@@ -127,7 +150,7 @@ describe("scope-logger log test", () => {
         logger.log({ testVari });
       }
       expect(testFn).toStdoutLog(
-        "Test logger: *log* -> *Object.actual* -> *__EXTERNAL_MATCHER_TRAP__* -> *Object.toStdoutLog* -> *Promise.then.completed* -> *new Promise* -> *callAsyncCircusFn* -> *_callCircusTest* ->*_runTest* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock* -> \n" +
+        "Test logger: *log* -> *Object.actual* -> *__EXTERNAL_MATCHER_TRAP__* -> *Object.toStdoutLog* -> *Promise.then.completed* -> *new Promise* -> *callAsyncCircusFn* -> *_callCircusTest* ->*_runTest* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock*\n" +
           "{\n" +
           '  "testVari": "abc123"\n' +
           "}\n" +
@@ -137,6 +160,13 @@ describe("scope-logger log test", () => {
   });
 
   describe("toConsoleLog", () => {
+    it("should intercept console.log", () => {
+      function testFn() {
+        const testVari = "abc123";
+        console.log(testVari);
+      }
+      expect(testFn).toConsoleLog("abc123" + "\n");
+    });
     it("should honor nodejs's process.stdout implm ", () => {
       function testFn() {
         const testVari = "abc123";
@@ -148,12 +178,59 @@ describe("scope-logger log test", () => {
       // Expected "" to be "Test logger: *log* -> ... // cuz jest's console DNUse process.stdout/stderr
 
       expect(testFn).toConsoleLog(
-        "Test logger: *log* -> *Object.actual* -> *__EXTERNAL_MATCHER_TRAP__* -> *Object.toConsoleLog* -> *Promise.then.completed* -> *new Promise* -> *callAsyncCircusFn* -> *_callCircusTest* ->*_runTest* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock* -> \n" +
+        "Test logger: *log* -> *Object.actual* -> *__EXTERNAL_MATCHER_TRAP__* -> *Object.toConsoleLog* -> *Promise.then.completed* -> *new Promise* -> *callAsyncCircusFn* -> *_callCircusTest* ->*_runTest* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock*\n" +
           "{\n" +
           '  "testVari": "abc123"\n' +
           "}\n" +
-          ""
+          "\n" +
+          "\n"
+        //last \n for toConsoleLog interceptor
       );
+    });
+    it("should allow both console.log and process.stdout.write?", () => {
+      function testFn() {
+        const testConsoleVari = "xyz456";
+        const testVari = "abc123";
+        const logger = new Logger("Test logger", {
+          entryPoint: "Object.actual",
+   
+        });
+
+        console.log(testConsoleVari);
+        logger.log(
+          { testVari },
+
+            // {
+            //   entryPoint: "Object.actual",
+            // }
+        );
+      }
+
+      //received: "xyz456Test logger" BUT should be "xyz456\nTest logger"
+      expect(testFn).toConsoleLog(
+        "xyz456" +
+          "\n" +
+          "Test logger: *log*" +
+          "\n" +
+          "{\n" +
+          '  "testVari": "abc123"\n' +
+          "}\n" +
+          "\n" +
+          "\n"
+        //last \n for toConsoleLog interceptor
+      );
+
+      //   expect(testFn).toConsoleLog(
+      //     "xyz456" +
+      //       "\n" +
+      //       "Test logger: *log* -> *Object.actual* -> *__EXTERNAL_MATCHER_TRAP__* -> *Object.toConsoleLog* -> *Promise.then.completed* -> *new Promise* -> *callAsyncCircusFn* -> *_callCircusTest* ->*_runTest* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock* -> *_runTestsForDescribeBlock* -> \n" +
+      //       "{\n" +
+      //       '  "testVari": "abc123"\n' +
+      //       "}\n" +
+      //       "\n" +
+      //       "\n"
+      //     //last \n for toConsoleLog interceptor
+      //   );
     });
   });
 });
