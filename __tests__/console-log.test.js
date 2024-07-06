@@ -84,8 +84,29 @@ describe("Test console", () => {
       expect(stdoutWriteSpy.mock.calls).not.toContainEqual(["Beetroot\n"]);
       //following fails cuz custom console implm
       //https://github.com/jestjs/jest/issues/9984
-      //   expect(stdoutWriteSpy).toHaveBeenLastCalledWith("Lettuce\n")
-      //   expect(stdoutWriteSpy).toHaveBeenCalledWith("Lettuce\n");
+
+      //     1: "  console.log
+      //     Beetroot
+
+      //       at log (__tests__/console-log.test.js:74:17)·
+      // ", [Function anonymous]
+      // ->     2: "  console.log
+      //     Lettuce
+
+      //       at log (__tests__/console-log.test.js:75:17)·
+      // ", [Function anonymous]
+      // expect(stdoutWriteSpy).toHaveBeenLastCalledWith("Lettuce\n")
+    //   expect(stdoutWriteSpy).toHaveBeenLastCalledWith(`  console.log\nBeetroot
+
+    //       at log (__tests__/console-log.test.js:74:17)·
+    // ", [Function anonymous]
+    // ->     2: "  console.log
+    //     Lettuce
+
+    //       at log (__tests__/console-log.test.js:75:17)·
+    // ", [Function anonymous]"`);
+
+      // expect(stdoutWriteSpy).toHaveBeenCalledWith("Lettuce\n");
 
       //   expect(stdoutWriteSpy.mock.calls).toContainEqual(["Beetroot\n"]);
     });

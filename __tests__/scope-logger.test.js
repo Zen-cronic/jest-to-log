@@ -65,34 +65,42 @@ expect.extend({
     const origProcessStdoutWrite = process.stdout.write.bind(process.stdout);
 
     const origConsoleLog = console.log.bind(console);
+    // const origConsoleLog = console.log;
 
     let logged = "";
 
-    //initial impl
-    // console.log = function (message, ...args) {
-    //   logged += message;
-    //   if (args.length > 0) {
-    //     for (const arg of args) {
-    //       logged += " " + arg;
-    //     }
-    //   }
-    // };
-
-    console.log = function (message, ...args) {
-      if (args.length == 0) {
-        logged += `${message}\n`;
+    console.log = (message, ...args) => {
+      if (args.length === 0) {
+        logged += message;
       } else {
-        // logged += `${message}\n`;
         for (const arg of args) {
           logged += " " + arg;
         }
-        logged += "\n";
+
+        // ? logged += "\n" needed
       }
+
+      logged += "\n";
 
       // stack overflow err
       //    (return) console.log(message, ...args);
+
+      // RangeError: Maximum call stack size exceeded
+      //BUT needed for display in term
+      // return origConsoleLog(message, ...args);
+      // return origConsoleLog.call(console, message, ...args);
     };
-    process.stdout.write = console.log;
+
+    try {
+      process.stdout.write = console.log;
+
+      //this throws RangeError (callstack) too even without the `return origConsoleLog.call(console, message, ...args);`
+      // process.stdout.write = origConsoleLog
+    } catch (error) {
+      console.warn(error);
+    }
+
+    //invoke the passed fn
     actual();
 
     //restore originals
@@ -193,16 +201,15 @@ describe("scope-logger log test", () => {
         const testVari = "abc123";
         const logger = new Logger("Test logger", {
           entryPoint: "Object.actual",
-   
         });
 
         console.log(testConsoleVari);
         logger.log(
-          { testVari },
+          { testVari }
 
-            // {
-            //   entryPoint: "Object.actual",
-            // }
+          // {
+          //   entryPoint: "Object.actual",
+          // }
         );
       }
 

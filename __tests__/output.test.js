@@ -1,5 +1,5 @@
 const { describe, expect, it } = require("@jest/globals");
-const util = require("node:util")
+const util = require("node:util");
 
 function checkLogMatchersArgs(actual, expected) {
   if (typeof actual != "function") {
@@ -11,9 +11,10 @@ function checkLogMatchersArgs(actual, expected) {
   }
 }
 expect.extend({
-  toConsoleLog: function (actual, expected) {
+  toConsoleLog: (actual, expected) => {
     checkLogMatchersArgs(actual, expected);
     const origConsoleLog = console.log.bind(console);
+    // const origConsoleLog = console.log;
 
     let logged = "";
 
@@ -26,6 +27,11 @@ expect.extend({
       }
       //stack overflow err
       //    (return) console.log(message, ...args);
+      // return origConsoleLog.call(console, message, ...args)
+
+      //bound alr, so call NU need
+      //explicit return undef
+      return origConsoleLog(message, ...args);
     };
     actual();
     console.log = origConsoleLog;
@@ -118,7 +124,7 @@ expect.extend({
     const pass = logged == expected;
 
     console.log({ logged });
-    console.log({stdoutLogged: util.stripVTControlCharacters(logged)});
+    console.log({ stdoutLogged: util.stripVTControlCharacters(logged) });
 
     if (pass) {
       return {
@@ -141,7 +147,7 @@ expect.extend({
 });
 
 describe("console and process", () => {
-  describe("toConsoleLog", () => {
+  describe.only("toConsoleLog", () => {
     it("should pass toConsoleLog", () => {
       //Output when used with process.stdout intercept instead:
       //  Expected "  console.log
@@ -152,8 +158,8 @@ describe("console and process", () => {
 
       //works only with console.log intercept
       expect(() => {
-        console.log("Jello", 1);
-      }).toConsoleLog("Jello 1");
+        console.log("Jello", 22);
+      }).toConsoleLog("Jello 22");
     });
     it("should not honor process.stdout.write", () => {
       //ansi-coloured
@@ -170,7 +176,7 @@ describe("console and process", () => {
       //     '\x1B[2m      \x1B[2mat log (\x1B[22m\x1B[2m\x1B[0m\x1B[36m__tests__/output.test.js\x1B[39m\x1B[0m\x1B[2m:158:17)\x1B[22m\x1B[2m\x1B[22m\n' +
       //     '\n'
       // }
-      
+
       expect(() => {
         console.log("Jello", 1);
       }).not.toStdoutLog("Jello 1");
