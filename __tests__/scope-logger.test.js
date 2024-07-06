@@ -74,6 +74,7 @@ expect.extend({
       if (args.length === 0) {
         logged += message;
       } else {
+        logged += message; // needed to add firstArg if args provided
         for (const arg of args) {
           logged += " " + arg;
         }
