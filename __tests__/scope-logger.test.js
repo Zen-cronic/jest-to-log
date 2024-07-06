@@ -26,6 +26,7 @@ expect.extend({
       if (typeof chunk == "string") {
         logged += chunk;
       }
+      //display the side effects of the orig function 
       return origProcessStdoutWrite(chunk, encoding, cb);
     };
 

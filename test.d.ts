@@ -1,4 +1,3 @@
-// optionally add a type declaration, e.g. it enables autocompletion in IDEs
 declare module "expect" {
   interface AsymmetricMatchers {
     toBeWithinRange(floor: number, ceiling: number): void;
@@ -15,6 +14,9 @@ declare module "expect" {
   interface Matchers<R> {
     toStdoutLog(expected: string): R;
     
+  }
+  interface Matchers<R>{
+    toLog(expected: string): R;
   }
 }
 
