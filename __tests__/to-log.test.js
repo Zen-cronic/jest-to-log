@@ -24,37 +24,14 @@ expect.extend({
     const origConsoleDebug = console.debug.bind(console);
 
     let loggedMessage = EMPTY_STRING;
+
     console.log = (firstArg, ...rest) => {
-      loggedMessage += firstArg;
-      //   loggedMessage += JSON.stringify(firstArg);
-
-      //   console.log({}, []); //{} []\n
-      //   console.log([], {}); //[] {}\n
-      if (rest.length > 0) {
-        for (const arg of rest) {
-          //   if (arg.toString() !== "") {
-          //     loggedMessage += WHITESPACE + arg;
-          //   } else {
-          //     loggedMessage += arg;
-          //   }
-          // loggedMessage += WHITESPACE + arg;
-
-          //NOT LT sol
-          loggedMessage += WHITESPACE + JSON.stringify(arg);
-        }
-      }
-      loggedMessage += LINE_TERMINATOR;
-
-      //   console.log
-      //   Jello 1
-      //
-      //     at console.origConsoleLog [as log] (__tests__/to-log.test.js:35:14)
-      //
-      // + more
+      loggedMessage += util.format(firstArg, ...rest) + "\n";
       return origConsoleLog(firstArg, ...rest);
     };
 
     //work cuz only an alias, .info DNCall .log unlike process.stdout.write
+    //Console.prototype.info = . .log
     console.info = console.log;
     console.debug = console.log;
 
@@ -122,14 +99,16 @@ describe("toLog", () => {
       function testFn() {
         console.log({}, []); // {} []\n
         console.log([], {}); // [] {}\n
+        console.log({ 1: 1, 2: [4, 5, 6] }, [100, 200, 300], undefined, null);
       }
 
-      // "[object Object] " +
-      //   LINE_TERMINATOR +
-      //   " [object Object]" +
-      //   LINE_TERMINATOR;
       const expectedString =
-        "{} []" + LINE_TERMINATOR + "[] {}" + LINE_TERMINATOR;
+        "{} []" +
+        LINE_TERMINATOR +
+        "[] {}" +
+        LINE_TERMINATOR +
+        "{ '1': 1, '2': [ 4, 5, 6 ] } [ 100, 200, 300 ] undefined null" +
+        LINE_TERMINATOR;
       expect(testFn).toLog(expectedString);
     });
     it("testing diff format", () => {
