@@ -25,20 +25,22 @@ expect.extend({
 
     let loggedMessage = EMPTY_STRING;
     console.log = (firstArg, ...rest) => {
-    //   loggedMessage += firstArg;
-      loggedMessage += JSON.stringify(firstArg);
+      loggedMessage += firstArg;
+      //   loggedMessage += JSON.stringify(firstArg);
 
-    //   console.log({}, []); //[object Object]\n
-    //   console.log([], {}); //[object Object]\n
+      //   console.log({}, []); //{} []\n
+      //   console.log([], {}); //[] {}\n
       if (rest.length > 0) {
         for (const arg of rest) {
-        //   if (arg.toString() !== "") {
-        //     loggedMessage += WHITESPACE + arg;
-        //   } else {
-        //     loggedMessage += arg;
-        //   }
-            // loggedMessage += WHITESPACE + arg;
-            loggedMessage += WHITESPACE + JSON.stringify(arg);
+          //   if (arg.toString() !== "") {
+          //     loggedMessage += WHITESPACE + arg;
+          //   } else {
+          //     loggedMessage += arg;
+          //   }
+          // loggedMessage += WHITESPACE + arg;
+
+          //NOT LT sol
+          loggedMessage += WHITESPACE + JSON.stringify(arg);
         }
       }
       loggedMessage += LINE_TERMINATOR;
@@ -127,10 +129,7 @@ describe("toLog", () => {
       //   " [object Object]" +
       //   LINE_TERMINATOR;
       const expectedString =
-        "{} []" +
-        LINE_TERMINATOR +
-        "[] {}" +
-        LINE_TERMINATOR;
+        "{} []" + LINE_TERMINATOR + "[] {}" + LINE_TERMINATOR;
       expect(testFn).toLog(expectedString);
     });
     it("testing diff format", () => {

@@ -96,19 +96,39 @@ describe("Test console", () => {
       //       at log (__tests__/console-log.test.js:75:17)·
       // ", [Function anonymous]
       // expect(stdoutWriteSpy).toHaveBeenLastCalledWith("Lettuce\n")
-    //   expect(stdoutWriteSpy).toHaveBeenLastCalledWith(`  console.log\nBeetroot
+      //   expect(stdoutWriteSpy).toHaveBeenLastCalledWith(`  console.log\nBeetroot
 
-    //       at log (__tests__/console-log.test.js:74:17)·
-    // ", [Function anonymous]
-    // ->     2: "  console.log
-    //     Lettuce
+      //       at log (__tests__/console-log.test.js:74:17)·
+      // ", [Function anonymous]
+      // ->     2: "  console.log
+      //     Lettuce
 
-    //       at log (__tests__/console-log.test.js:75:17)·
-    // ", [Function anonymous]"`);
+      //       at log (__tests__/console-log.test.js:75:17)·
+      // ", [Function anonymous]"`);
 
       // expect(stdoutWriteSpy).toHaveBeenCalledWith("Lettuce\n");
 
       //   expect(stdoutWriteSpy.mock.calls).toContainEqual(["Beetroot\n"]);
+    });
+  });
+
+  describe("Testing output of console.log in jest", () => {
+    it("should log {} and [] as is", () => {
+      console.log("Testing output");
+      console.log({}, []);
+      console.log([], {});
+
+      //
+      // console.log
+      //   {} []
+
+      //     at Object.log (__tests__/console-log.test.js:118:15)
+
+      // console.log
+      //   [] {}
+
+      //     at Object.log (__tests__/console-log.test.js:119:15)
+      expect(true).toBe(true);
     });
   });
 });
