@@ -2,18 +2,42 @@
   "name": "jest-to-log",
   "description": "Test log messages with jest",
   "version": "1.0.0",
+  "author": "Kaung Zin Hein (https://www.kaungzinhein.me/)",
+  "license": "MIT",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "scripts": {
     "test": "jest --watchAll",
     "check:tar": "npm pack && tar -xvzf *.tgz && rm -rf package *.tgz"
   },
-  "files": ["/src", "CHANGELOG.md"],
-  "keywords": [],
-  "author": "",
-  "license": "MIT",
+  "files": [
+    "/src",
+    "CHANGELOG.md"
+  ],
+  "keywords": [
+    "assertions",
+    "matchers",
+    "testing",
+    "console",
+    "process",
+    "stdout",
+    "stderr",
+    "error",
+    "warn",
+    "test",
+    "jest",
+    "unit",
+    "log"
+  ],
   "devDependencies": {
     "jest": "^29.7.0",
     "scope-logger": "^1.2.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zen-cronic/jest-to-log.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Zen-cronic/jest-to-log/issues"
   }
 }
