@@ -5,8 +5,10 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "scripts": {
-    "test": "jest --watchAll"
+    "test": "jest --watchAll",
+    "check:pub": "npm pack && tar -xvzf *.tgz && rm -rf package *.tgz"
   },
+  "files": ["/src", "CHANGELOG.md"],
   "keywords": [],
   "author": "",
   "license": "MIT",
