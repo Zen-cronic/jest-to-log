@@ -8,7 +8,7 @@ process.stdout.write = (chunk, encoding, cb) => {
   if (typeof chunk == "string") {
     interceptedOutput += chunk;
   }
-  return origProcessStdoutWrite(chunk, encoding, cb)
+  // return origProcessStdoutWrite(chunk, encoding, cb)
 };
 
 function interceptedFn() {
@@ -38,8 +38,14 @@ process.stdout.write = origProcessStdoutWrite;
 
 //terminal out: '' => but JSON ""
 //'Original call\nJello 1\n{"1":1,"2":[4,5,6]} [1,2,3] undefined null\n'
-console.log(interceptedOutput );
+console.log({interceptedOutput} );
 
-console.warn("Jelo");
+// 'Original call\n' +
+// 'Process stdout write call: [object Object] Jello\n' +
+// "{ '1': 1, '2': [ 4, 5, 6 ] } [ 1, 2, 3 ] undefined null\n" +
+// 'Promise { undefined }\n'
+
+//colorised in v20.15.0+
+console.warn("Jelo"); 
 console.error("Jelo");
 

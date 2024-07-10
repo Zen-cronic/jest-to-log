@@ -15,8 +15,15 @@ declare module "expect" {
     toStdoutLog(expected: string): R;
     
   }
+  //to-log test matchers
   interface Matchers<R>{
     toLog(expected: string): R;
+  }
+  interface Matchers<R>{
+    toLogStdout(expected: string): R;
+  }
+  interface Matchers<R>{
+    toLogErrorOrWarn(expected: string): R;
   }
 }
 
