@@ -1,12 +1,12 @@
 {
   "name": "jest-to-log",
-  "description": "Test log messages in jest",
+  "description": "Test log messages with jest",
   "version": "1.0.0",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "scripts": {
     "test": "jest --watchAll",
-    "check:pub": "npm pack && tar -xvzf *.tgz && rm -rf package *.tgz"
+    "check:tar": "npm pack && tar -xvzf *.tgz && rm -rf package *.tgz"
   },
   "files": ["/src", "CHANGELOG.md"],
   "keywords": [],
