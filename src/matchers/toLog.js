@@ -35,35 +35,24 @@ function toLogMatcher(actual, expected) {
 
   const pass = cleanedMessage === expected;
 
+  const messageFn = () => {
+    return `${this.utils.printDiffOrStringify(
+      expected,
+      cleanedMessage,
+      `Expected`,
+      `Received`,
+      true
+    )} `;
+  };
   if (pass) {
     return {
       pass: true,
-      message: () => {
-        return `${this.utils.printDiffOrStringify(
-          expected,
-          cleanedMessage,
-          `Expected`,
-          `Received`,
-          true
-        )} `;
-      },
+      message: messageFn,
     };
   } else {
     return {
       pass: false,
-      message: () => {
-        return `${this.utils.printDiffOrStringify(
-          expected,
-          cleanedMessage,
-          `Expected`,
-          `Received`,
-          true
-        )} `;
-
-        //   return `Expected ${this.utils.printReceived(
-        //     loggedMessage
-        //   )} not to be ${this.utils.printExpected(expected)}`;
-      },
+      message: messageFn,
     };
   }
 }

@@ -1,32 +1,28 @@
 const util = require("util");
 const { checkLogMatchersArgs, EMPTY_STRING } = require("../utils");
 
-function toLogErrorOrWarnMatcher(actual, expected) {
+function toLogStderrMatcher(actual, expected) {
   checkLogMatchersArgs(actual, expected);
 
-  const origConsoleError = console.error.bind(console);
-  const origConsoleWarn = console.error.bind(console);
+  const origProcessStderrWrite = process.stderr.write.bind(process.stderr);
 
   let loggedMessage = EMPTY_STRING;
 
-  //intercept console.error
-  console.error = (firstArg, ...rest) => {
-    loggedMessage += util.format(firstArg, ...rest) + "\n";
-    return origConsoleError(firstArg, ...rest);
+  process.stderr.write = function (chunk, encoding, cb) {
+    if (typeof chunk == "string") {
+      loggedMessage += chunk;
+    }
+    //display the side effects of the orig function
+    return origProcessStderrWrite(chunk, encoding, cb);
   };
-
-  console.warn = console.error;
 
   //invoke
   actual();
 
   //restore
-  console.error = origConsoleError;
-  console.warn = origConsoleWarn;
+  process.stderr.write = origProcessStderrWrite;
 
-  //ansi applied only after invoked, so cleaning nu need
   const cleanedMessage = util.stripVTControlCharacters(loggedMessage);
-  // const cleanedMessage = loggedMessage;
 
   const pass = cleanedMessage === expected;
 
@@ -52,8 +48,8 @@ function toLogErrorOrWarnMatcher(actual, expected) {
   }
 }
 
-module.exports = toLogErrorOrWarnMatcher;
+module.exports = toLogStderrMatcher;
 
 expect.extend({
-  toLogErrorOrWarn: toLogErrorOrWarnMatcher,
+  toLogStderr: toLogStderrMatcher,
 });

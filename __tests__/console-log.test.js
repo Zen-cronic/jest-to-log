@@ -6,7 +6,7 @@ const {
   it,
   beforeEach,
   afterEach,
-  jest,
+  jest: jestGlobal,
 } = require("@jest/globals");
 
 describe("Test console", () => {
@@ -19,11 +19,11 @@ describe("Test console", () => {
     }
 
     beforeEach(() => {
-      logSpy = jest.spyOn(global.console, "log");
+      logSpy = jestGlobal.spyOn(global.console, "log");
       // .mockImplementation(() => {}) //
-      //.mockImplm equilvalent to jest.fn(implm()) //e.g., the functionaliyt of log stubbed with noop
+      //.mockImplm equilvalent to jestGlobal.fn(implm()) //e.g., the functionaliyt of log stubbed with noop
 
-      infoSpy = jest.spyOn(global.console, "info");
+      infoSpy = jestGlobal.spyOn(global.console, "info");
     });
 
     afterEach(() => {
@@ -50,7 +50,7 @@ describe("Test console", () => {
     let stdoutWriteSpy = null;
 
     beforeEach(() => {
-      stdoutWriteSpy = jest.spyOn(process.stdout, "write");
+      stdoutWriteSpy = jestGlobal.spyOn(process.stdout, "write");
     });
 
     afterEach(() => {
@@ -83,7 +83,7 @@ describe("Test console", () => {
 
       expect(stdoutWriteSpy.mock.calls).not.toContainEqual(["Beetroot\n"]);
       //following fails cuz custom console implm
-      //https://github.com/jestjs/jest/issues/9984
+      //https://github.com/jestGlobaljs/jestGlobal/issues/9984
 
       //     1: "  console.log
       //     Beetroot
@@ -112,7 +112,7 @@ describe("Test console", () => {
     });
   });
 
-  describe("Testing output of console.log in jest", () => {
+  describe("Testing output of console.log in jestGlobal", () => {
     it("should log {} and [] as is", () => {
       console.log("Testing output");
       console.log({}, []);

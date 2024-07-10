@@ -1,15 +1,16 @@
 {
-  "name": "expect",
+  "name": "jest-to-log",
+  "description": "Test log messages in jest",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
   "scripts": {
     "test": "jest --watchAll"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
+  "license": "MIT",
+  "devDependencies": {
     "jest": "^29.7.0",
     "scope-logger": "^1.2.0"
   }

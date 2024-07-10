@@ -1,190 +1,7 @@
-const { describe, expect, it, jest } = require("@jest/globals");
-const util = require("node:util");
+require("../src/index");
+
+const { describe, expect, it } = require("@jest/globals");
 const { LINE_TERMINATOR } = require("../src/utils");
-
-
-
-expect.extend({
-  toLog: function (actual, expected) {
-    checkLogMatchersArgs(actual, expected);
-
-    const origConsoleLog = console.log.bind(console);
-    const origConsoleInfo = console.info.bind(console);
-    const origConsoleDebug = console.debug.bind(console);
-
-    let loggedMessage = EMPTY_STRING;
-
-    //intercept console.log
-    console.log = (firstArg, ...rest) => {
-      loggedMessage += util.format(firstArg, ...rest) + "\n";
-      return origConsoleLog(firstArg, ...rest);
-      // return;
-    };
-
-    //work cuz only an alias, .info DNCall .log unlike .log calling process.stdout.write
-    //Console.prototype.info = . .log
-    //Console.prototype.debug = . .log
-    console.info = console.log;
-    console.debug = console.log;
-
-    //invoke
-    actual();
-
-    //restore
-    console.log = origConsoleLog;
-    console.info = origConsoleInfo;
-    console.debug = origConsoleDebug;
-
-    const cleanedMessage = util.stripVTControlCharacters(loggedMessage);
-
-    const pass = cleanedMessage === expected;
-
-    if (pass) {
-      return {
-        pass: true,
-        message: () => {
-          return `${this.utils.printDiffOrStringify(
-            expected,
-            cleanedMessage,
-            `Expected`,
-            `Received`,
-            true
-          )} `;
-        },
-      };
-    } else {
-      return {
-        pass: false,
-        message: () => {
-          return `${this.utils.printDiffOrStringify(
-            expected,
-            cleanedMessage,
-            `Expected`,
-            `Received`,
-            true
-          )} `;
-
-          //   return `Expected ${this.utils.printReceived(
-          //     loggedMessage
-          //   )} not to be ${this.utils.printExpected(expected)}`;
-        },
-      };
-    }
-  },
-  toLogStdout: function (actual, expected) {
-    checkLogMatchersArgs(actual, expected);
-
-    const origProcessStdoutWrite = process.stdout.write.bind(process.stdout);
-
-    let loggedMessage = EMPTY_STRING;
-
-    process.stdout.write = function (chunk, encoding, cb) {
-      if (typeof chunk == "string") {
-        loggedMessage += chunk;
-      }
-      //display the side effects of the orig function
-      return origProcessStdoutWrite(chunk, encoding, cb);
-    };
-
-    //invoke
-    actual();
-
-    //restore
-    process.stdout.write = origProcessStdoutWrite;
-
-    const cleanedMessage = util.stripVTControlCharacters(loggedMessage);
-
-    const pass = cleanedMessage === expected;
-
-    if (pass) {
-      return {
-        pass: true,
-        message: () => {
-          return `${this.utils.printDiffOrStringify(
-            expected,
-            cleanedMessage,
-            `Expected`,
-            `Received`,
-            true
-          )} `;
-        },
-      };
-    } else {
-      return {
-        pass: false,
-        message: () => {
-          return `${this.utils.printDiffOrStringify(
-            expected,
-            cleanedMessage,
-            `Expected`,
-            `Received`,
-            true
-          )} `;
-
-          //   return `Expected ${this.utils.printReceived(
-          //     loggedMessage
-          //   )} not to be ${this.utils.printExpected(expected)}`;
-        },
-      };
-    }
-  },
-  toLogErrorOrWarn: function (actual, expected) {
-    checkLogMatchersArgs(actual, expected);
-
-    const origConsoleError = console.error.bind(console);
-    const origConsoleWarn = console.error.bind(console);
-
-    let loggedMessage = EMPTY_STRING;
-
-    //intercept console.error
-    console.error = (firstArg, ...rest) => {
-      loggedMessage += util.format(firstArg, ...rest) + "\n";
-      return origConsoleError(firstArg, ...rest);
-    };
-
-    console.warn = console.error;
-
-    //invoke
-    actual();
-
-    //restore
-    console.error = origConsoleError;
-
-    //ansi applied only after invoked, so cleaning nu need
-    const cleanedMessage = util.stripVTControlCharacters(loggedMessage);
-    // const cleanedMessage = loggedMessage;
-
-    const pass = cleanedMessage === expected;
-
-    if (pass) {
-      return {
-        pass: true,
-        message: () => {
-          return `${this.utils.printDiffOrStringify(
-            expected,
-            cleanedMessage,
-            `Expected`,
-            `Received`,
-            true
-          )} `;
-        },
-      };
-    } else {
-      return {
-        pass: false,
-        message: () => {
-          return `${this.utils.printDiffOrStringify(
-            expected,
-            cleanedMessage,
-            `Expected`,
-            `Received`,
-            true
-          )} `;
-        },
-      };
-    }
-  },
-});
 
 describe("extended matchers", () => {
   describe("toLog", () => {
@@ -216,13 +33,6 @@ describe("extended matchers", () => {
           "{ '1': 1, '2': [ 3, 4, 5 ] } [ 100, 200, 300 ] undefined null" +
           LINE_TERMINATOR;
         expect(testFn).toLog(expectedString);
-      });
-      it("testing diff format", () => {
-        // -  A B C
-        // + ABC
-        const expected = " A B C \n";
-        const result = "ABC ";
-        expect(result).not.toBe(expected);
       });
     });
 
@@ -310,6 +120,7 @@ describe("extended matchers", () => {
         // +
         // +       at log (__tests__/to-log.test.js:261:17)
         // +
+
         // console.log("Jello log");
         process.stdout.write(`Jello 123\n`);
         process.stdout.write(`Gello 456\n`);
@@ -318,6 +129,18 @@ describe("extended matchers", () => {
       const expected =
         "Jello 123" + LINE_TERMINATOR + "Gello 456" + LINE_TERMINATOR;
       expect(testFn).toLogStdout(expected);
+    });
+  });
+  describe("toLogStderr", () => {
+    it("should honor process.stdout.write", () => {
+      function testFn() {
+        process.stderr.write(`Jello 123\n`);
+        process.stderr.write(`Gello 456\n`);
+      }
+
+      const expected =
+        "Jello 123" + LINE_TERMINATOR + "Gello 456" + LINE_TERMINATOR;
+      expect(testFn).toLogStderr(expected);
     });
   });
   describe("toLogErrorOrWarn", () => {

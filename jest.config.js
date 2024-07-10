@@ -2,9 +2,7 @@
 
 const config = {
   restoreMocks: true,
-  injectGlobals: false,
-  // verbose: true
-  
+  injectGlobals: true,
 };
 
 module.exports = config;
