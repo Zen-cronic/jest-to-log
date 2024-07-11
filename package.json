@@ -7,7 +7,7 @@
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "jest --watch",
     "check:tar": "npm pack && tar -xvzf *.tgz && rm -rf package *.tgz"
   },
   "files": [

@@ -20,7 +20,7 @@ expect.extend({
     const origProcessStdoutWrite = process.stdout.write.bind(process.stdout);
 
     // console.log(process.stdout.isTTY);
-
+    
     process.stdout.write = function (chunk, encoding, cb) {
       //   logged += chunk.toString("utf-8");
       if (typeof chunk == "string") {
