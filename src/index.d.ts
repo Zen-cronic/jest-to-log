@@ -1,4 +1,5 @@
 declare module "expect" {
+  
   //to-log matchers
   interface Matchers<R> {
     toLog(expected: string): R;

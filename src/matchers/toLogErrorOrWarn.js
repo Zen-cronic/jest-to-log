@@ -24,9 +24,7 @@ function toLogErrorOrWarnMatcher(actual, expected) {
   console.error = origConsoleError;
   console.warn = origConsoleWarn;
 
-  //ansi applied only after invoked, so cleaning nu need
   const cleanedMessage = util.stripVTControlCharacters(loggedMessage);
-  // const cleanedMessage = loggedMessage;
 
   const pass = cleanedMessage === expected;
 

@@ -14,12 +14,8 @@ function toLogMatcher(actual, expected) {
   console.log = (firstArg, ...rest) => {
     loggedMessage += util.format(firstArg, ...rest) + "\n";
     return origConsoleLog(firstArg, ...rest);
-    // return;
   };
 
-  //work cuz only an alias, .info DNCall .log unlike .log calling process.stdout.write
-  //Console.prototype.info = . .log
-  //Console.prototype.debug = . .log
   console.info = console.log;
   console.debug = console.log;
 

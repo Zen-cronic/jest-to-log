@@ -12,7 +12,6 @@ function toLogStderrMatcher(actual, expected) {
     if (typeof chunk == "string") {
       loggedMessage += chunk;
     }
-    //display the side effects of the orig function
     return origProcessStderrWrite(chunk, encoding, cb);
   };
 
