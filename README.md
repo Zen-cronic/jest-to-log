@@ -1,14 +1,14 @@
 # jest-to-log
 
-# What
+## What
 
 Test log messages with [`jest`](https://jestjs.io/)
 
-# Why?
+## Why?
 
 Grown out of the need to test `console.log/error` messages or writes to `process.stdout/stderr` in my cli-facing apps. Note: this is not a full-blown cli-testing tool, but a check for important log messages from your app that's tested with jest.
 
-# Usage
+## Usage
 
 ```javascript
 require("jest-to-log");
@@ -16,7 +16,7 @@ require("jest-to-log");
 import "jest-to-log";
 ```
 
-# Example
+## Example
 
 ```javascript
 //in jest test file
@@ -36,8 +36,21 @@ describe("toLog", () => {
   });
 });
 ```
+## Caveat
+- When using with typescript (i.e., `ts-jest` and `@types/jest`), it's advised to explicitly import the `expect` from `@jest/globals` to avoid type conflicts: 
 
-# Matchers
+```javascript
+//test.ts
+
+import {expect} from "@jest/globals"
+
+// ...your test
+```
+
+- Do NOT set the `injectGlobals` jest option to `false`, or else a `ReferenceError` will be thrown. This is because the matchers are extended onto the `expect` object _without_ importing it from `@jest/globals`.  
+
+
+## Matchers
 
 | Matcher Name       | Description                                                                                                                                                                  |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -46,18 +59,20 @@ describe("toLog", () => {
 | `toLogStderr     ` | Checks if a function **explicitly** write to `process.stderr`. Cannot be used to capture `console.error/warn` calls due to the custom console implementation of `jest`.      |
 | `toLogErrorOrWarn` | Checks if a function logs an error or warning via `console.error()` or `console.warn()`, respectively.                                                                       |
 
-# Installation
+
+
+## Installation
 
 `$ npm install jest-to-log`
 
-# Requirements
+## Requirements
 
-- `Jest`
+- Latest versions of `Jest` recommended
 
-# Dependencies
+## Dependencies
 
 - **0 javascript/nodejs dependency!**
 
-# Test
+## Test
 
 `$ npm test`
