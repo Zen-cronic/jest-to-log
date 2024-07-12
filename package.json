@@ -11,6 +11,7 @@
   },
   "scripts": {
     "test": "jest",
+    "test:ci": "jest --ci",
     "test:w": "jest --watch",
     "check:tar": "npm pack && tar -xvzf *.tgz && rm -rf package *.tgz"
   },
