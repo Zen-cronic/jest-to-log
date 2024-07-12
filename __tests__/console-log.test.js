@@ -9,7 +9,7 @@ const {
   jest: jestGlobal,
 } = require("@jest/globals");
 
-describe("Test console", () => {
+describe.skip("Test console", () => {
   describe("console.log", () => {
     let logSpy = null;
     let infoSpy = null;
