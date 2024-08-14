@@ -1,7 +1,7 @@
 {
   "name": "jest-to-log",
   "description": "Test log messages with jest",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Kaung Zin Hein (https://www.kaungzinhein.me/)",
   "license": "MIT",
   "main": "./src/index.js",
