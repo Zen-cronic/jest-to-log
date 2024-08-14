@@ -1,7 +1,11 @@
 const util = require("util");
-const { checkLogMatchersArgs, EMPTY_STRING } = require("../utils");
+const {
+  checkLogMatchersArgs,
+  EMPTY_STRING,
+  invokeFunction,
+} = require("../utils");
 
-function toLogMatcher(actual, expected) {
+async function toLogMatcher(actual, expected) {
   checkLogMatchersArgs(actual, expected);
 
   const origConsoleLog = console.log.bind(console);
@@ -20,7 +24,7 @@ function toLogMatcher(actual, expected) {
   console.debug = console.log;
 
   //invoke
-  actual();
+  await invokeFunction(actual);
 
   //restore
   console.log = origConsoleLog;

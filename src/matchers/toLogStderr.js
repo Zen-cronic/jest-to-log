@@ -1,7 +1,11 @@
 const util = require("util");
-const { checkLogMatchersArgs, EMPTY_STRING } = require("../utils");
+const {
+  checkLogMatchersArgs,
+  EMPTY_STRING,
+  invokeFunction,
+} = require("../utils");
 
-function toLogStderrMatcher(actual, expected) {
+async function toLogStderrMatcher(actual, expected) {
   checkLogMatchersArgs(actual, expected);
 
   const origProcessStderrWrite = process.stderr.write.bind(process.stderr);
@@ -16,7 +20,7 @@ function toLogStderrMatcher(actual, expected) {
   };
 
   //invoke
-  actual();
+  await invokeFunction(actual);
 
   //restore
   process.stderr.write = origProcessStderrWrite;

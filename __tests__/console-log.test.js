@@ -20,8 +20,6 @@ describe.skip("Test console", () => {
 
     beforeEach(() => {
       logSpy = jestGlobal.spyOn(global.console, "log");
-      // .mockImplementation(() => {}) //
-      //.mockImplm equilvalent to jestGlobal.fn(implm()) //e.g., the functionaliyt of log stubbed with noop
 
       infoSpy = jestGlobal.spyOn(global.console, "info");
     });
@@ -35,7 +33,7 @@ describe.skip("Test console", () => {
       testFn();
 
       expect(logSpy).toHaveBeenCalledTimes(2);
-      // expect(logSpy)
+
       expect(logSpy).toHaveBeenCalledWith("Cabbage");
 
       expect(logSpy.mock.calls).toContainEqual(["Carrot"]);
@@ -82,6 +80,7 @@ describe.skip("Test console", () => {
       expect(stdoutWriteSpy).not.toHaveBeenCalledWith("Lettuce\n");
 
       expect(stdoutWriteSpy.mock.calls).not.toContainEqual(["Beetroot\n"]);
+
       //following fails cuz custom console implm
       //https://github.com/jestGlobaljs/jestGlobal/issues/9984
 
@@ -107,28 +106,27 @@ describe.skip("Test console", () => {
       // ", [Function anonymous]"`);
 
       // expect(stdoutWriteSpy).toHaveBeenCalledWith("Lettuce\n");
-
-      //   expect(stdoutWriteSpy.mock.calls).toContainEqual(["Beetroot\n"]);
     });
   });
 
-  describe("Testing output of console.log in jestGlobal", () => {
-    it("should log {} and [] as is", () => {
-      console.log("Testing output");
-      console.log({}, []);
-      console.log([], {});
+  // describe("Testing output of console.log in jestGlobal", () => {
+  //   it("should log {} and [] as is", () => {
+  //     console.log("Testing output");
+  //     console.log({}, []);
+  //     console.log([], {});
 
-      //
-      // console.log
-      //   {} []
+  //     //
+  //     // console.log
+  //     //   {} []
 
-      //     at Object.log (__tests__/console-log.test.js:118:15)
+  //     //     at Object.log (__tests__/console-log.test.js:118:15)
 
-      // console.log
-      //   [] {}
+  //     // console.log
+  //     //   [] {}
 
-      //     at Object.log (__tests__/console-log.test.js:119:15)
-      expect(true).toBe(true);
-    });
-  });
+  //     //     at Object.log (__tests__/console-log.test.js:119:15)
+
+  //     expect(true).toBe(true);
+  //   });
+  // });
 });

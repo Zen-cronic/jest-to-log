@@ -11,6 +11,27 @@ function checkLogMatchersArgs(actual, expected) {
   }
 }
 
+function getClassName(o) {
+  return Object.prototype.toString.call(o);
+}
+
+function isAsyncFunction(fn) {
+  return getClassName(fn) === "[object AsyncFunction]";
+}
+
+async function invokeFunction(fn) {
+  if (isAsyncFunction(fn)) {
+    await fn();
+  } else {
+    fn();
+  }
+}
+
 module.exports = {
-    EMPTY_STRING, LINE_TERMINATOR, checkLogMatchersArgs
+  EMPTY_STRING,
+  LINE_TERMINATOR,
+  checkLogMatchersArgs,
+  getClassName,
+  isAsyncFunction,
+  invokeFunction
 };

@@ -60,9 +60,6 @@ describe("extended matchers", () => {
           );
         }
 
-        //   const expectedString =
-        //     ["Vello 300", "Vello 400", "Vello 500"].join(LINE_TERMINATOR) +
-        //     LINE_TERMINATOR;
         const expectedString =
           "Vello 300" +
           LINE_TERMINATOR +
@@ -226,5 +223,50 @@ describe("extended matchers", () => {
       // });
     });
   });
-});
+  describe("handle async functions", () => {
+    it("should honor console methods", async () => {
+      async function asyncTestFn() {
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            console.log("ASYNC log");
+            console.info("ASYNC info");
+            console.debug("ASYNC debug");
 
+            console.warn("ASYNC warn");
+            console.error("ASYNC error");
+
+            resolve();
+          }, 500);
+        });
+      }
+
+      await expect(asyncTestFn).toLog(
+        ["ASYNC log", "ASYNC info", "ASYNC debug"].join(LINE_TERMINATOR) +
+          LINE_TERMINATOR
+      );
+      await expect(asyncTestFn).toLogErrorOrWarn(
+        ["ASYNC warn", "ASYNC error"].join(LINE_TERMINATOR) + LINE_TERMINATOR
+      );
+    });
+
+    it("should honor process write methods", async () => {
+      async function asyncTestFn() {
+        await new Promise((resolve) => {
+          setTimeout(() => {
+            process.stdout.write("ASYNC process.stdout.write\n");
+            process.stderr.write("ASYNC process.stderr.write\n");
+
+            resolve();
+          }, 500);
+        });
+      }
+
+      await expect(asyncTestFn).toLogStdout(
+        "ASYNC process.stdout.write" + LINE_TERMINATOR
+      );
+      await expect(asyncTestFn).toLogStderr(
+        "ASYNC process.stderr.write" + LINE_TERMINATOR
+      );
+    });
+  });
+});

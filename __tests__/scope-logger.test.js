@@ -19,14 +19,11 @@ expect.extend({
     checkLogMatchersArgs(actual, expected);
     const origProcessStdoutWrite = process.stdout.write.bind(process.stdout);
 
-    // console.log(process.stdout.isTTY);
-    
     process.stdout.write = function (chunk, encoding, cb) {
-      //   logged += chunk.toString("utf-8");
       if (typeof chunk == "string") {
         logged += chunk;
       }
-      //display the side effects of the orig function 
+      //display the side effects of the orig function
       return origProcessStdoutWrite(chunk, encoding, cb);
     };
 
@@ -36,10 +33,7 @@ expect.extend({
 
     process.stdout.write = origProcessStdoutWrite;
 
-    // console.log({ logged });
-
     const strippedLogged = util.stripVTControlCharacters(logged);
-    // console.log({ strippedLogged });
 
     const pass = strippedLogged == expected;
     if (pass) {

@@ -1,7 +1,11 @@
 const util = require("util");
-const { checkLogMatchersArgs, EMPTY_STRING } = require("../utils");
+const {
+  checkLogMatchersArgs,
+  EMPTY_STRING,
+  invokeFunction,
+} = require("../utils");
 
-function toLogStdoutMatcher(actual, expected) {
+async function toLogStdoutMatcher(actual, expected) {
   checkLogMatchersArgs(actual, expected);
 
   const origProcessStdoutWrite = process.stdout.write.bind(process.stdout);
@@ -16,7 +20,7 @@ function toLogStdoutMatcher(actual, expected) {
   };
 
   //invoke
-  actual();
+  await invokeFunction(actual);
 
   //restore
   process.stdout.write = origProcessStdoutWrite;
