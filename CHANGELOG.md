@@ -4,7 +4,7 @@
 - Adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 
-## [1.2.0] - 2024-08-14
+## [1.1.0] - 2024-08-14
 
 ### Added
 
