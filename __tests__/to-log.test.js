@@ -1,7 +1,7 @@
 require("../src/index");
 
 const { describe, expect, it } = require("@jest/globals");
-const { LINE_TERMINATOR } = require("../src/utils");
+const { LINE_TERMINATOR, joinRight } = require("../src/utils");
 
 describe("extended matchers", () => {
   describe("toLog", () => {
@@ -25,13 +25,13 @@ describe("extended matchers", () => {
           console.log({ 1: 1, 2: [3, 4, 5] }, [100, 200, 300], undefined, null);
         }
 
-        const expectedString =
-          "{} []" +
-          LINE_TERMINATOR +
-          "[] {}" +
-          LINE_TERMINATOR +
-          "{ '1': 1, '2': [ 3, 4, 5 ] } [ 100, 200, 300 ] undefined null" +
-          LINE_TERMINATOR;
+        const expectedStringArr = [
+          "{} []",
+          "[] {}",
+          "{ '1': 1, '2': [ 3, 4, 5 ] } [ 100, 200, 300 ] undefined null",
+        ];
+
+        const expectedString = joinRight(expectedStringArr, LINE_TERMINATOR);
         expect(testFn).toLog(expectedString);
       });
     });
@@ -60,14 +60,13 @@ describe("extended matchers", () => {
           );
         }
 
-        const expectedString =
-          "Vello 300" +
-          LINE_TERMINATOR +
-          "Vello 400" +
-          LINE_TERMINATOR +
-          "{ '1': 1, '2': [ 3, 4, 5 ] } [ 100, 200, 300 ] undefined null" +
-          LINE_TERMINATOR;
+        const expectedStringArr = [
+          "Vello 300",
+          "Vello 400",
+          "{ '1': 1, '2': [ 3, 4, 5 ] } [ 100, 200, 300 ] undefined null",
+        ];
 
+        const expectedString = joinRight(expectedStringArr, LINE_TERMINATOR);
         expect(testFn).toLog(expectedString);
       });
     });
@@ -95,14 +94,13 @@ describe("extended matchers", () => {
           );
         }
 
-        const expectedString =
-          "Cello 300" +
-          LINE_TERMINATOR +
-          "Cello 400" +
-          LINE_TERMINATOR +
-          "{ '1': 1, '2': [ 3, 4, 5 ] } [ 100, 200, 300 ] undefined null" +
-          LINE_TERMINATOR;
+        const expectedStringArr = [
+          "Cello 300",
+          "Cello 400",
+          "{ '1': 1, '2': [ 3, 4, 5 ] } [ 100, 200, 300 ] undefined null",
+        ];
 
+        const expectedString = joinRight(expectedStringArr, LINE_TERMINATOR);
         expect(testFn).toLog(expectedString);
       });
     });
@@ -177,17 +175,14 @@ describe("extended matchers", () => {
           console.error("Gello 123");
         }
 
-        const expected =
-          "Jello warning" +
-          LINE_TERMINATOR +
-          "Gello error" +
-          LINE_TERMINATOR +
-          "Jello 123" +
-          LINE_TERMINATOR +
-          "Gello 123" +
-          LINE_TERMINATOR;
-
-        expect(testFn).toLogErrorOrWarn(expected);
+        const expectedStringArr = [
+          "Jello warning",
+          "Gello error",
+          "Jello 123",
+          "Gello 123",
+        ];
+        const expectedString = joinRight(expectedStringArr, LINE_TERMINATOR);
+        expect(testFn).toLogErrorOrWarn(expectedString);
       });
 
       it("should not honor other methods", () => {
@@ -241,11 +236,10 @@ describe("extended matchers", () => {
       }
 
       await expect(asyncTestFn).toLog(
-        ["ASYNC log", "ASYNC info", "ASYNC debug"].join(LINE_TERMINATOR) +
-          LINE_TERMINATOR
+        joinRight(["ASYNC log", "ASYNC info", "ASYNC debug"], LINE_TERMINATOR)
       );
       await expect(asyncTestFn).toLogErrorOrWarn(
-        ["ASYNC warn", "ASYNC error"].join(LINE_TERMINATOR) + LINE_TERMINATOR
+        joinRight(["ASYNC warn", "ASYNC error"], LINE_TERMINATOR)
       );
     });
 
