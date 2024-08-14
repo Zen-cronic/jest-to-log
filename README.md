@@ -23,12 +23,16 @@ import "jest-to-log";
 require("jest-to-log");
 
 describe("toLog", () => {
+
   it("should capture log messages", () => {
+
     function testFn() {
+
       console.info("Jello", 1);
       console.log("Jello", 2);
       console.debug("Jello", 3);
     }
+    
     const expectedString =
       "Jello 1" + "\n" + "Jello 2" + "\n" + "Jello 3" + "\n";
 
@@ -36,19 +40,53 @@ describe("toLog", () => {
   });
 });
 ```
+
+## Async Example
+
+When an `async` function is tested, the `expect` assertions must be awaited.
+
+```javascript
+//in jest test file (esm)
+import("jest-to-log");
+
+describe("process.stdout.write", () => {
+
+  it("should capture process.stdout.write messages", async () => {
+
+    async function asyncTestFn() {
+
+      await new Promise((resolve) => {
+
+        setTimeout(() => {
+          process.stdout.write(`Jello 123\n`);
+          process.stdout.write(`Jello 456\n`);
+
+          resolve();
+
+        }, 500);
+      });
+    }
+
+    const expectedString = "Jello 123" + "\n" + "Jello 456" + "\n";
+
+    await expect(asyncTestFn).toLog(expectedString);
+  });
+});
+```
+
 ## Caveat
-- When using with typescript (i.e., `ts-jest` and `@types/jest`), it's advised to explicitly import the `expect` from `@jest/globals` to avoid type conflicts: 
+
+- When using with typescript (i.e., `ts-jest` and `@types/jest`), it's advised to explicitly import the `expect` from `@jest/globals` to avoid type conflicts:
 
 ```javascript
 //test.ts
 
-import {expect} from "@jest/globals"
+import { expect } from "@jest/globals";
 
 // ...your test
 ```
 
-- Do NOT set the `injectGlobals` jest option to `false`, or else a `ReferenceError` will be thrown. This is because the matchers are extended onto the `expect` object _without_ importing it from `@jest/globals`.  
-
+- Do NOT set the `injectGlobals` jest option to `false`, or else a `ReferenceError` will be thrown. This is because the matchers are extended onto the `expect` object _without_ importing it from `@jest/globals`.
 
 ## Matchers
 
@@ -58,8 +96,6 @@ import {expect} from "@jest/globals"
 | `toLogStdout     ` | Checks if a function **explicitly** writes to `process.stdout`. Cannot be used to capture `console.log/info/debug` calls due to the custom console implementation of `jest`. |
 | `toLogStderr     ` | Checks if a function **explicitly** write to `process.stderr`. Cannot be used to capture `console.error/warn` calls due to the custom console implementation of `jest`.      |
 | `toLogErrorOrWarn` | Checks if a function logs an error or warning via `console.error()` or `console.warn()`, respectively.                                                                       |
-
-
 
 ## Installation
 

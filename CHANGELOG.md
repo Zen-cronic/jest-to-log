@@ -4,6 +4,13 @@
 - Adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
 
 
+## [1.2.0] - 2024-08-14
+
+### Added
+
+- Added support for `async` functions that contains logging
+- Updated README with async example
+
 ## [1.0.1] - 2024-07-12
 
 ### Fixed
